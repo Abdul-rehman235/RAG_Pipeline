@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>RAG Assistant — New Chat</title>
   
   <!-- Google Fonts -->
@@ -14,8 +14,11 @@
 </head>
 <body>
 
+  <!-- MOBILE OVERLAY BACKDROP -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-top">
       <div class="brand">
         <span class="gemini-sparkle">✦</span>
@@ -45,17 +48,22 @@
     
     <!-- Top Header -->
     <header class="chat-header">
-      <div class="model-selector">
-        Dev. <span class="rag-badge">RAG Active</span>
+      <div class="header-left">
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">
+          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </button>
+        <div class="model-selector">
+          Dev. <span class="rag-badge">RAG Active</span>
+        </div>
       </div>
     </header>
 
     <!-- Chat Box Container -->
-    <section class="chat-box">
+    <section class="chat-box" id="chatBox">
       <div class="chat-content">
 
         <!-- Welcome / New Chat State -->
-        {% if not query and not responce %}
+        {% if not query and not response %}
           <div class="welcome-container">
             <h1 class="welcome-title">Hello, Developer</h1>
             <p class="welcome-sub">Ask any question to search your indexed document knowledge base.</p>
@@ -72,7 +80,7 @@
         {% endif %}
 
         <!-- RAG Response Bubble -->
-        {% if responce %}
+        {% if response %}
           <div class="message-row model">
             <div class="model-header">
               <span class="model-icon gemini-sparkle">✦</span>
@@ -80,7 +88,7 @@
             </div>
             
             <div class="response-card">
-              <p class="response-text">{{ responce }}</p>
+              <p class="response-text">{{ response }}</p>
             </div>
           </div>
         {% endif %}
@@ -88,7 +96,7 @@
       </div>
     </section>
 
-    <!-- Input Form -->
+    <!-- Fixed Bottom Input Form -->
     <div class="input-wrapper">
       <form action="/" method="POST" class="input-form">
         <input 
@@ -109,5 +117,32 @@
 
   </main>
 
+  <!-- JS FOR MOBILE SIDEBAR TOGGLE & AUTO SCROLL -->
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const chatBox = document.getElementById('chatBox');
+
+    // Toggle Sidebar on Mobile
+    if (menuBtn) {
+      menuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      });
+    }
+
+    // Auto scroll chat to bottom when content renders
+    if (chatBox) {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
 </body>
 </html>

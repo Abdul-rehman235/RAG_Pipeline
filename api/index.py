@@ -101,3 +101,6 @@ def home():
         return render_template("index.html", responce=res.content, response=res.content)
 
     return render_template("index.html")
+
+
+
