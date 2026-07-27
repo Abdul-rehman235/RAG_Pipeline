@@ -420,18 +420,19 @@ body {
   word-break: break-word;
 }
 
-/* FIXED BOTTOM INPUT FORM */
+/* FIXED BOTTOM CHAT INPUT BAR */
 .input-wrapper {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
   display: flex;
   justify-content: center;
-  padding: 16px 24px 24px 24px;
-  background: linear-gradient(180deg, rgba(19, 19, 20, 0) 0%, var(--bg-dark) 40%);
-  z-index: 20;
-  pointer-events: none; /* Allows scrolling behind space */
+  padding: 12px 24px max(16px, env(safe-area-inset-bottom)) 24px;
+  background: linear-gradient(180deg, rgba(19, 19, 20, 0) 0%, var(--bg-dark) 45%);
+  z-index: 50;
+  pointer-events: none;
 }
 
 .input-form {
@@ -440,29 +441,35 @@ body {
   max-width: 800px;
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
-  border-radius: 28px;
-  padding: 6px 8px 6px 18px;
+  border-radius: 24px; /* Slightly lower radius allows smooth vertical growth */
+  padding: 8px 8px 8px 18px;
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* Align send button to bottom when text expands */
   gap: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
 .input-form:focus-within {
   border-color: #555856;
 }
 
-.chat-input {
+/* MULTI-LINE AUTO-EXPANDING TEXTAREA */
+.chat-textarea {
   flex: 1;
   background: transparent;
   border: none;
   outline: none;
   color: var(--text-main);
-  font-size: 0.98rem;
-  padding: 8px 0;
+  font-size: 16px; /* 16px stops iOS browser auto-zoom */
+  line-height: 1.4;
+  padding: 6px 0;
+  resize: none; /* Prevents manual drag resizing */
+  max-height: 160px; /* Limits maximum height before scrolling inside */
+  overflow-y: auto;
+  font-family: inherit;
 }
 
-.chat-input::placeholder {
+.chat-textarea::placeholder {
   color: var(--text-subtle);
 }
 
@@ -470,14 +477,15 @@ body {
   background-color: var(--text-main);
   color: var(--bg-dark);
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+  margin-bottom: 2px; /* Keeps button nicely aligned at the bottom */
   transition: opacity 0.2s ease;
 }
 
@@ -490,6 +498,29 @@ body {
   height: 18px;
   fill: currentColor;
 }
+
+/* MOBILE MEDIA QUERY */
+@media (max-width: 768px) {
+  .input-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 12px max(12px, env(safe-area-inset-bottom)) 12px;
+  }
+
+  .input-form {
+    padding: 6px 6px 6px 14px;
+    border-radius: 20px;
+  }
+
+  .send-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+
 
 /* BACKDROP OVERLAY FOR MOBILE */
 .sidebar-overlay {

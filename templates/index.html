@@ -96,17 +96,17 @@
       </div>
     </section>
 
-    <!-- Fixed Bottom Input Form -->
+    <!-- Fixed Bottom WhatsApp-Style Input Form -->
     <div class="input-wrapper">
-      <form action="/" method="POST" class="input-form">
-        <input 
-          type="text" 
+      <form action="/" method="POST" class="input-form" id="chatForm">
+        <textarea 
           name="user_query" 
-          class="chat-input" 
+          id="chatInput"
+          class="chat-textarea" 
           placeholder="Ask something about your docs..." 
-          autocomplete="off"
-          required 
-        />
+          rows="1"
+          required
+        ></textarea>
         <button type="submit" class="send-btn" aria-label="Send query">
           <svg viewBox="0 0 24 24">
             <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -114,7 +114,7 @@
         </button>
       </form>
     </div>
-
+    
   </main>
 
   <!-- JS FOR MOBILE SIDEBAR TOGGLE & AUTO SCROLL -->
