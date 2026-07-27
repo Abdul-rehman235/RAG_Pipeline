@@ -3,6 +3,7 @@ python-dotenv
 pypdf
 faiss-cpu
 langchain
+gunicorn
 langchain-core
 langchain-community
 langchain-text-splitters
