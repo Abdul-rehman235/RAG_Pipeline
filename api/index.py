@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, session
 from pathlib import Path
-from embedder import RawFixedEmbedder
+from .embedder import RawFixedEmbedder
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -106,5 +106,3 @@ def home():
 
     return render_template("index.html")
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True)
