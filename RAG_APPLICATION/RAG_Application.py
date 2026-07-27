@@ -21,7 +21,7 @@ def home():
     if request.method == "POST":
         user_query = request.form.get("user_query")
 
-        chat_history = ("chat_history", [])
+        # chat_history = ("chat_history", [])
 
         # 1. Safe Path Resolution
         BASE_DIR = Path(__file__).resolve().parent
