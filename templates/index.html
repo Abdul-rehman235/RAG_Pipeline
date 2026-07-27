@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG Assistant — New Chat</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="brand">
+        <span class="gemini-sparkle">✦</span>
+        <span class="brand-title">RAG Engine</span>
+      </div>
+
+      <!-- Route to main page -->
+      <a href="/" class="new-chat-btn">
+        <span>+</span> New chat
+      </a>
+
+      <div class="history-title">Recent Queries</div>
+      <ul class="history-list">
+        <li class="history-item active">Vector embeddings explanation</li>
+        <li class="history-item">ChromaDB collection setup</li>
+        <li class="history-item">FastAPI async endpoint</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-footer">
+      Connected to Local Index
+    </div>
+  </aside>
+
+  <!-- MAIN CHAT CONTAINER -->
+  <main class="main-container">
+    
+    <!-- Top Header -->
+    <header class="chat-header">
+      <div class="model-selector">
+        Dev. <span class="rag-badge">RAG Active</span>
+      </div>
+    </header>
+
+    <!-- Chat Box Container -->
+    <section class="chat-box">
+      <div class="chat-content">
+
+        <!-- Welcome / New Chat State -->
+        {% if not query and not responce %}
+          <div class="welcome-container">
+            <h1 class="welcome-title">Hello, Developer</h1>
+            <p class="welcome-sub">Ask any question to search your indexed document knowledge base.</p>
+          </div>
+        {% endif %}
+
+        <!-- User Query Bubble -->
+        {% if query %}
+          <div class="message-row user">
+            <div class="user-bubble">
+              {{ query }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- RAG Response Bubble -->
+        {% if responce %}
+          <div class="message-row model">
+            <div class="model-header">
+              <span class="model-icon gemini-sparkle">✦</span>
+              <span>RAG System</span>
+            </div>
+            
+            <div class="response-card">
+              <p class="response-text">{{ responce }}</p>
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+    </section>
+
+    <!-- Input Form -->
+    <div class="input-wrapper">
+      <form action="/" method="POST" class="input-form">
+        <input 
+          type="text" 
+          name="user_query" 
+          class="chat-input" 
+          placeholder="Ask something about your docs..." 
+          autocomplete="off"
+          required 
+        />
+        <button type="submit" class="send-btn" aria-label="Send query">
+          <svg viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+  </main>
+
+</body>
+</html>
