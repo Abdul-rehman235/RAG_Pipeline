@@ -308,7 +308,7 @@ body {
 .model-selector {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap:15px;
   font-family: 'Outfit', sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
