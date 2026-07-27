@@ -20,18 +20,142 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* ROOT & BODY SETUP FOR MOBILE VIEWPORTS */
 html, body {
   height: 100%;
+  height: 100dvh; /* Dynamic viewport height for modern browsers */
   width: 100%;
   overflow: hidden;
   background-color: var(--bg-dark);
   color: var(--text-main);
+  margin: 0;
+  padding: 0;
 }
 
 body {
   display: flex;
-  position: fixed; /* Prevents mobile rubber-banding/bouncing */
-  inset: 0;
+  position: fixed; /* Freezes background page jumping on iOS keyboard popup */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+/* MAIN CONTAINER LAYOUT */
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* SCROLLABLE CHAT CONTAINER */
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth momentum scroll on iOS */
+  padding: 20px 0 110px 0; /* Bottom space guarantees input never overlaps text */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chat-content {
+  width: 100%;
+  max-width: 800px;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* FIXED BOTTOM CHAT INPUT BAR */
+.input-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 12px 24px max(16px, env(safe-area-inset-bottom)) 24px;
+  background: linear-gradient(180deg, rgba(19, 19, 20, 0) 0%, var(--bg-dark) 45%);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.input-form {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 800px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  padding: 6px 8px 6px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-size: 16px; /* Prevents auto-zoom on mobile Safari */
+  padding: 8px 0;
+}
+
+.send-btn {
+  background-color: var(--text-main);
+  color: var(--bg-dark);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* MOBILE MEDIA QUERY OVERRIDES */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .chat-content {
+    padding: 0 16px;
+  }
+
+  /* Ensures input bar stays pinned at screen bottom on mobile */
+  .input-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 12px max(12px, env(safe-area-inset-bottom)) 12px;
+  }
+
+  .input-form {
+    padding: 4px 6px 4px 14px;
+  }
 }
 
 /* SIDEBAR STYLING */
