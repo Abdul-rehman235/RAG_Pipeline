@@ -51,12 +51,12 @@ body {
   overflow: hidden;
 }
 
-/* SCROLLABLE CHAT CONTAINER */
+/* CHAT MESSAGES CONTAINER */
 .chat-box {
   flex: 1;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Smooth momentum scroll on iOS */
-  padding: 20px 0 110px 0; /* Bottom space guarantees input never overlaps text */
+  /* Extra bottom padding taakay input bar message ko na chupaye */
+  padding: 24px 0 140px 0; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -68,7 +68,20 @@ body {
   padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
+  /* VERY IMPORTANT: height: 100% ko remove kar ke auto karein */
+  height: auto; 
+  justify-content: flex-start; /* Messages hamesha top se start honge */
+}
+
+/* WELCOME SCREEN ONLY (Jab chat khali ho tab Center me aaye) */
+.welcome-container {
+  margin: 100px auto 0 auto; /* Top se thoda space */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 /* FIXED BOTTOM CHAT INPUT BAR */
