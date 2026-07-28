@@ -342,7 +342,8 @@ body {
 .chat-box {
   flex: 1;
   overflow-y: auto;
-  padding: 20px 0 100px 0; /* Extra bottom padding so input doesn't obscure content */
+  /* Extra bottom padding creates free space above the input bar */
+  padding: 24px 0 160px 0; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -355,7 +356,8 @@ body {
   padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
+  height: auto; /* Ensures content flows naturally */
 }
 
 /* WELCOME SCREEN */

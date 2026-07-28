@@ -199,7 +199,15 @@
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   });
-
+  function scrollToBottom() {
+  // Smoothly scroll the container to the absolute bottom
+    setTimeout(() => {
+    chatBox.scrollTo({
+      top: chatBox.scrollHeight + 100,
+      behavior: 'smooth'
+      });
+    }, 100); // Small delay allows the DOM to render the full text height
+  }
   // Helper function to prevent HTML injection
   function escapeHtml(text) {
     const div = document.createElement('div');
