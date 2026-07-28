@@ -98,9 +98,8 @@ def home():
         # 2. Invoke RAG Chain
         formatted_prompt = prompt.format(context=context, question=user_query)
         res = llm.invoke(formatted_prompt)
- 
-        answer = res.content   
-        return render_template("index.html", responce=res.content)
+   
+        return render_template("index.html", responce=res.content, response=res.content)
 
     return render_template("index.html")
 
