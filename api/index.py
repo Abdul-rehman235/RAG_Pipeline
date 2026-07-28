@@ -100,7 +100,7 @@ def home():
         res = llm.invoke(formatted_prompt)
  
         answer = res.content   
-        return jsonify({"response": answer})
+        return render_template("index.html", responce=res.content)
 
     return render_template("index.html")
 
