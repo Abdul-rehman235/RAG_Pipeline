@@ -202,31 +202,26 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem; /* Icon scale size */
+  font-size: 1.1rem; /* Adjust symbol size here */
   line-height: 1;
   user-select: none;
 }
 
-/* Gradient Square Icon Styling */
+/* Gradient effect on the ▩ symbol */
 .gemini-sparkle {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 3px; /* Rounded corners for modern square look */
-  
-  /* Modern gradient background */
   background: linear-gradient(135deg, #4285f4 0%, #9b72cb 50%, #d96570 100%);
-  
-  /* Soft outer glow */
-  box-shadow: 0 0 8px rgba(155, 114, 203, 0.5);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(155, 114, 203, 0.4));
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-/* Hover Interaction */
 .gemini-sparkle:hover {
-  transform: scale(1.2);
-  box-shadow: 0 0 12px rgba(155, 114, 203, 0.8);
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 10px rgba(155, 114, 203, 0.7));
 }
+
 
 .brand-title {
   font-family: 'Outfit', sans-serif;
