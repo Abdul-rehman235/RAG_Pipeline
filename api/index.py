@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 
 from langchain_community.document_loaders import PyPDFLoader
@@ -89,16 +89,18 @@ def home():
 
         if not user_query:
             return render_template("index.html")
-
+        
         # 1. Similarity Search on pre-loaded vector store
         docs = vector_store.similarity_search(query=user_query, k=3)
         context = "\n".join([doc.page_content for doc in docs])
 
+
         # 2. Invoke RAG Chain
         formatted_prompt = prompt.format(context=context, question=user_query)
         res = llm.invoke(formatted_prompt)
-
-        return render_template("index.html", responce=res.content, response=res.content)
+ 
+        answer = res.content   
+        return jsonify({"response": answer})
 
     return render_template("index.html")
 

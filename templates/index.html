@@ -56,113 +56,155 @@
       </div>
     </header>
 
-    <!-- Chat Box Container -->
-    <section class="chat-box" id="chatBox">
-      <div class="chat-content">
+    <!-- CHAT BOX CONTAINER -->
+<section class="chat-box" id="chatBox">
+  <div class="chat-content" id="chatContent">
 
-        <!-- Welcome / New Chat State -->
-        {% if not query and not response %}
-          <div class="welcome-container">
-            <h1 class="welcome-title">Hello, Developer</h1>
-            <p class="welcome-sub">Ask any question to search your indexed document knowledge base.</p>
-          </div>
-        {% endif %}
-
-        <!-- User Query Bubble -->
-        {% if query %}
-          <div class="message-row user">
-            <div class="user-bubble">
-              {{ query }}
-            </div>
-          </div>
-        {% endif %}
-
-        <!-- RAG Response Bubble -->
-        {% if response %}
-          <div class="message-row model">
-            <div class="model-header">
-              <span class="model-icon gemini-sparkle">✦</span>
-              <span>RAG System</span>
-            </div>
-            
-            <div class="response-card">
-              <p class="response-text">{{ response }}</p>
-            </div>
-          </div>
-        {% endif %}
-
+    <!-- Welcome State -->
+    {% if not query and not response %}
+      <div class="welcome-container" id="welcomeContainer">
+        <h1 class="welcome-title">Hello, Developer</h1>
+        <p class="welcome-sub">Ask any question to search your indexed document knowledge base.</p>
       </div>
-    </section>
+    {% endif %}
 
-    <!-- Fixed Bottom WhatsApp-Style Input Form -->
-    <div class="input-wrapper">
-      <form action="/" method="POST" class="input-form" id="chatForm">
-        <textarea 
-          name="user_query" 
-          id="chatInput"
-          class="chat-textarea" 
-          placeholder="Ask something about your docs..." 
-          rows="1"
-          required
-        ></textarea>
-        <button type="submit" class="send-btn" aria-label="Send query">
-          <svg viewBox="0 0 24 24">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          </svg>
-        </button>
-      </form>
+    <!-- Django/Jinja Rendered Messages (For initial load) -->
+    {% if query %}
+      <div class="message-row user">
+        <div class="user-bubble">{{ query }}</div>
+      </div>
+    {% endif %}
+
+    {% if response %}
+      <div class="message-row model">
+        <div class="model-header">
+          <span class="model-icon gemini-sparkle">✦</span>
+          <span>RAG System</span>
+        </div>
+        <div class="response-card">
+          <p class="response-text">{{ response }}</p>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <!-- DOT LOADER (Hidden by default) -->
+  <div class="message-row model" id="loadingRow" style="display: none; padding: 0 24px; width: 100%; max-width: 800px;">
+    <div class="model-header">
+      <span class="model-icon gemini-sparkle">✦</span>
+      <span>RAG System</span>
     </div>
+    <div class="response-card">
+      <div class="dot-loader">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
+</section>
 
-  </main>
+<!-- INPUT FORM -->
+<div class="input-wrapper">
+  <form id="chatForm" class="input-form">
+    <textarea 
+      name="user_query" 
+      id="chatInput" 
+      class="chat-textarea" 
+      placeholder="Ask something about your docs..." 
+      rows="1" 
+      required
+    ></textarea>
+    <button type="submit" class="send-btn" aria-label="Send query">
+      <svg viewBox="0 0 24 24">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg>
+    </button>
+  </form>
+</div>
 
-  <!-- JS FOR MOBILE SIDEBAR TOGGLE & AUTO SCROLL -->
   <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    const chatBox = document.getElementById('chatBox');
-    const textarea = document.getElementById('chatInput');
   const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatContent = document.getElementById('chatContent');
+  const loadingRow = document.getElementById('loadingRow');
+  const chatBox = document.getElementById('chatBox');
+  const welcomeContainer = document.getElementById('welcomeContainer');
 
-  if (textarea) {
-    // Auto-grow height as user types
-    textarea.addEventListener('input', () => {
-      textarea.style.height = 'auto';
-      textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
-    });
+  chatForm.addEventListener('submit', async (e) => {
+    // 1. STOP PAGE RELOAD
+    e.preventDefault();
 
-    // Handle Enter key vs Shift+Enter
-    textarea.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        // On Mobile screens, allow standard newline on Enter unless user submits manually
-        if (window.innerWidth > 768) {
-          e.preventDefault();
-          if (textarea.value.trim() !== '') {
-            chatForm.submit();
-          }
-        }
-      }
-    });
-  }
-    // Toggle Sidebar on Mobile
-    if (menuBtn) {
-      menuBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-        overlay.classList.toggle('active');
-      });
+    const userQuery = chatInput.value.trim();
+    if (!userQuery) return;
+
+    // Hide welcome text if it's visible
+    if (welcomeContainer) {
+      welcomeContainer.style.display = 'none';
     }
 
-    if (overlay) {
-      overlay.addEventListener('click', () => {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-      });
-    }
+    // 2. Add User Message to screen
+    const userBubbleHTML = `
+      <div class="message-row user">
+        <div class="user-bubble">${escapeHtml(userQuery)}</div>
+      </div>
+    `;
+    chatContent.insertAdjacentHTML('beforeend', userBubbleHTML);
 
-    // Auto scroll chat to bottom when content renders
-    if (chatBox) {
+    // Clear input & reset height
+    chatInput.value = '';
+    chatInput.style.height = 'auto';
+
+    // 3. SHOW DOT LOADER
+    loadingRow.style.display = 'block';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+      // 4. Send request in background
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ 'user_query': userQuery })
+      });
+
+      const data = await response.json();
+
+      // 5. Add AI Response to screen
+      const botResponseHTML = `
+        <div class="message-row model">
+          <div class="model-header">
+            <span class="model-icon gemini-sparkle">✦</span>
+            <span>RAG System</span>
+          </div>
+          <div class="response-card">
+            <p class="response-text">${escapeHtml(data.response || data.responce)}</p>
+          </div>
+        </div>
+      `;
+      chatContent.insertAdjacentHTML('beforeend', botResponseHTML);
+
+    } catch (err) {
+      chatContent.insertAdjacentHTML('beforeend', `
+        <div class="message-row model">
+          <div class="response-card" style="color: #ff6b6b;">Error fetching response. Try again.</div>
+        </div>
+      `);
+    } finally {
+      // 6. HIDE LOADER & Scroll Down
+      loadingRow.style.display = 'none';
       chatBox.scrollTop = chatBox.scrollHeight;
     }
-  </script>
+  });
+
+  // Helper function to prevent HTML injection
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+</script>
 </body>
 </html>
