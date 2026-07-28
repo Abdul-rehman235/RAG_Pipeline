@@ -98,7 +98,11 @@ def home():
         # 2. Invoke RAG Chain
         formatted_prompt = prompt.format(context=context, question=user_query)
         res = llm.invoke(formatted_prompt)
-   
+        answer = res.content if hasattr(res, 'content') else str(res)
+            
+            # 1. IF JS FETCH REQUEST: Return JSON (No Reload)
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest' or request.is_json or 'application/json' in request.headers.get('Accept', ''):
+            return jsonify({"response": answer})
         return render_template("index.html", responce=res.content, response=res.content)
 
     return render_template("index.html")

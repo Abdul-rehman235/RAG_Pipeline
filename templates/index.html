@@ -166,9 +166,10 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-        },
+          'Accept': 'application/json'  // <--- Tells Flask to send back JSON instead of HTML
+     },
         body: new URLSearchParams({ 'user_query': userQuery })
-      });
+});
 
       const data = await response.json();
 
