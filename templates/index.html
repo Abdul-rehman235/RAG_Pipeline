@@ -139,150 +139,165 @@
 </div>
 
   <script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. DOM Elements
+  const menuBtn = document.getElementById('menuBtn'); // Fixed ID match
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  
   const chatForm = document.getElementById('chatForm');
   const chatInput = document.getElementById('chatInput');
   const chatContent = document.getElementById('chatContent');
   const loadingRow = document.getElementById('loadingRow');
   const chatBox = document.getElementById('chatBox');
   const welcomeContainer = document.getElementById('welcomeContainer');
-  if (!menuToggle || !sidebar) {
-      console.error('Menu elements not found in the DOM.');
-      return;
-    }
 
-    function toggleSidebar() {
-      sidebar.classList.toggle('active');
-      if (sidebarOverlay) {
-        sidebarOverlay.classList.toggle('active');
-      }
-    }
+  const uploadBtn = document.getElementById('uploadBtn');
+  const docFileInput = document.getElementById('docFileInput');
+  const uploadStatus = document.getElementById('uploadStatus');
 
-    // Attach click listener
-    menuToggle.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevents event bubbling
-      toggleSidebar();
-    });
-
-    // Close when tapping outside overlay
-    if (sidebarOverlay) {
-      sidebarOverlay.addEventListener('click', toggleSidebar);
-    }
-  chatForm.addEventListener('submit', async (e) => {
-    // 1. STOP PAGE RELOAD
-    e.preventDefault();
-
-    const userQuery = chatInput.value.trim();
-    if (!userQuery) return;
-
-    // Hide welcome text if it's visible
-    if (welcomeContainer) {
-      welcomeContainer.style.display = 'none';
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-  const menuToggle = document.getElementById('menuToggle');
-  const sidebar = document.getElementById('sidebar');
-  const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-  if (!menuToggle || !sidebar) {
-    console.error("Sidebar or Menu Button element missing!");
-    return;
-  }
-
+  // 2. Mobile Sidebar Toggle Function
   function toggleSidebar(e) {
     if (e) {
-      e.preventDefault(); // Prevents double-firing on touch screens
+      e.preventDefault();
       e.stopPropagation();
     }
-    
     sidebar.classList.toggle('active');
     if (sidebarOverlay) {
       sidebarOverlay.classList.toggle('active');
     }
   }
 
-  // 1. Support Mobile Touch + Desktop Click
-  ['touchstart', 'click'].forEach(eventType => {
-    menuToggle.addEventListener(eventType, toggleSidebar, { passive: false });
-  });
+  // Bind Sidebar Events (Mobile Touch + Click)
+  if (menuBtn && sidebar) {
+    ['touchstart', 'click'].forEach(eventType => {
+      menuBtn.addEventListener(eventType, toggleSidebar, { passive: false });
+    });
+  } else {
+    console.error("Menu button or Sidebar element missing in DOM.");
+  }
 
-  // 2. Close when tapping overlay
   if (sidebarOverlay) {
     ['touchstart', 'click'].forEach(eventType => {
       sidebarOverlay.addEventListener(eventType, toggleSidebar, { passive: false });
     });
   }
-});
 
-    // 2. Add User Message to screen
-    const userBubbleHTML = `
-      <div class="message-row user">
-        <div class="user-bubble">${escapeHtml(userQuery)}</div>
-      </div>
-    `;
-    chatContent.insertAdjacentHTML('beforeend', userBubbleHTML);
+  // 3. Document Upload Handling
+  if (uploadBtn && docFileInput) {
+    uploadBtn.addEventListener('click', () => docFileInput.click());
 
-    // Clear input & reset height
-    chatInput.value = '';
-    chatInput.style.height = 'auto';
+    docFileInput.addEventListener('change', async (e) => {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
 
-    // 3. SHOW DOT LOADER
-    loadingRow.style.display = 'block';
-    chatBox.scrollTop = chatBox.scrollHeight;
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append('file', files[i]);
+      }
 
-    try {
-      // 4. Send request in background
-      const response = await fetch('/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Accept': 'application/json'  // <--- Tells Flask to send back JSON instead of HTML
-     },
-        body: new URLSearchParams({ 'user_query': userQuery })
-});
+      uploadStatus.className = 'upload-status';
+      uploadStatus.textContent = `Uploading ${files.length} file(s)...`;
 
-      const data = await response.json();
+      try {
+        const res = await fetch('/upload', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (res.ok) {
+          uploadStatus.className = 'upload-status success';
+          uploadStatus.textContent = data.message || 'Docs uploaded successfully!';
+        } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      } catch (err) {
+        uploadStatus.className = 'upload-status error';
+        uploadStatus.textContent = err.message || 'Error uploading docs.';
+      } finally {
+        docFileInput.value = '';
+      }
+    });
+  }
 
-      // 5. Add AI Response to screen
-      const botResponseHTML = `
-        <div class="message-row model">
-          <div class="model-header">
-            <span class="model-icon gemini-sparkle">✦</span>
-            <span>RAG System</span>
-          </div>
-          <div class="response-card">
-            <p class="response-text">${escapeHtml(data.response || data.responce)}</p>
-          </div>
+  // 4. Chat Form Submit Handling
+  if (chatForm) {
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const userQuery = chatInput.value.trim();
+      if (!userQuery) return;
+
+      if (welcomeContainer) {
+        welcomeContainer.style.display = 'none';
+      }
+
+      // Add User Message Bubble
+      const userBubbleHTML = `
+        <div class="message-row user">
+          <div class="user-bubble">${escapeHtml(userQuery)}</div>
         </div>
       `;
-      chatContent.insertAdjacentHTML('beforeend', botResponseHTML);
+      chatContent.insertAdjacentHTML('beforeend', userBubbleHTML);
 
-    } catch (err) {
-      chatContent.insertAdjacentHTML('beforeend', `
-        <div class="message-row model">
-          <div class="response-card" style="color: #ff6b6b;">Error fetching response. Try again.</div>
-        </div>
-      `);
-    } finally {
-      // 6. HIDE LOADER & Scroll Down
-      loadingRow.style.display = 'none';
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-  });
-  function scrollToBottom() {
-  // Smoothly scroll the container to the absolute bottom
-    setTimeout(() => {
-    chatBox.scrollTo({
-      top: chatBox.scrollHeight + 100,
-      behavior: 'smooth'
-      });
-    }, 100); // Small delay allows the DOM to render the full text height
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+
+      loadingRow.style.display = 'block';
+      scrollToBottom();
+
+      try {
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json'
+          },
+          body: new URLSearchParams({ 'user_query': userQuery })
+        });
+
+        const data = await response.json();
+
+        // Add Model Response Bubble
+        const botResponseHTML = `
+          <div class="message-row model">
+            <div class="model-header">
+              <span class="model-icon gemini-sparkle">▩</span>
+              <span>RAG System</span>
+            </div>
+            <div class="response-card">
+              <p class="response-text">${escapeHtml(data.response || data.responce)}</p>
+            </div>
+          </div>
+        `;
+        chatContent.insertAdjacentHTML('beforeend', botResponseHTML);
+
+      } catch (err) {
+        chatContent.insertAdjacentHTML('beforeend', `
+          <div class="message-row model">
+            <div class="response-card" style="color: #ff6b6b;">Error fetching response. Try again.</div>
+          </div>
+        `);
+      } finally {
+        loadingRow.style.display = 'none';
+        scrollToBottom();
+      }
+    });
   }
-  // Helper function to prevent HTML injection
+
+  // Helper Functions
+  function scrollToBottom() {
+    setTimeout(() => {
+      chatBox.scrollTo({
+        top: chatBox.scrollHeight + 100,
+        behavior: 'smooth'
+      });
+    }, 100);
+  }
+
   function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
   }
+});
 </script>
 </body>
 </html>
