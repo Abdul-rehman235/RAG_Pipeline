@@ -21,6 +21,18 @@
   }
 }
 
+/* 1. Allows instant mobile touches without standard 300ms delay */
+#menuToggle, .menu-toggle {
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 2. Prevents SVG/Icon inside button from swallowing touch events */
+#menuToggle *, .menu-toggle * {
+  pointer-events: none;
+}
+
 /* Prevents inner SVG elements from blocking button click events */
 .menu-toggle *, #menuToggle * {
   pointer-events: none;

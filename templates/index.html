@@ -164,6 +164,40 @@
     if (welcomeContainer) {
       welcomeContainer.style.display = 'none';
     }
+    document.addEventListener('DOMContentLoaded', () => {
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+  if (!menuToggle || !sidebar) {
+    console.error("Sidebar or Menu Button element missing!");
+    return;
+  }
+
+  function toggleSidebar(e) {
+    if (e) {
+      e.preventDefault(); // Prevents double-firing on touch screens
+      e.stopPropagation();
+    }
+    
+    sidebar.classList.toggle('active');
+    if (sidebarOverlay) {
+      sidebarOverlay.classList.toggle('active');
+    }
+  }
+
+  // 1. Support Mobile Touch + Desktop Click
+  ['touchstart', 'click'].forEach(eventType => {
+    menuToggle.addEventListener(eventType, toggleSidebar, { passive: false });
+  });
+
+  // 2. Close when tapping overlay
+  if (sidebarOverlay) {
+    ['touchstart', 'click'].forEach(eventType => {
+      sidebarOverlay.addEventListener(eventType, toggleSidebar, { passive: false });
+    });
+  }
+});
 
     // 2. Add User Message to screen
     const userBubbleHTML = `
