@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
 
 from langchain_community.document_loaders import PyPDFLoader
@@ -27,8 +27,6 @@ app = Flask(
     static_folder=str(BASE_DIR / 'static')
 )
 
-app.secret_key = 'your_secret_key_here' 
-
 # -------------------------------------------------------------
 # Custom Embeddings Wrapper
 # -------------------------------------------------------------
@@ -47,15 +45,14 @@ class CustomEmbeddings(Embeddings):
 # INITIALIZE RAG & VECTOR STORE ONCE AT STARTUP (GLOBAL SCOPE)
 # -------------------------------------------------------------
 def initialize_vector_store():
-    # # 1. Locate PDF file
-    # pdf_path = BASE_DIR / "python_rag_reference.pdf"
-    # if not os.path.exists(pdf_path):
-    #     pdf_path = BASE_DIR / "api" / "python_rag_reference.pdf"
+    # 1. Locate PDF file
+    pdf_path = BASE_DIR / "python_rag_reference.pdf"
+    if not os.path.exists(pdf_path):
+        pdf_path = BASE_DIR / "api" / "python_rag_reference.pdf"
 
-    # # 2. Load & Split PDF
-    # loader = PyPDFLoader(str(pdf_path))
-    # docs = loader.load()
-    docs = session.get('docs_file')
+    # 2. Load & Split PDF
+    loader = PyPDFLoader(str(pdf_path))
+    docs = loader.load()
 
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splitted_data = splitter.split_documents(docs)
@@ -89,8 +86,7 @@ if you dont know the answer then you can say 'I DONT KNOW'.
 def home():
     if request.method == "POST":
         user_query = request.form.get("user_query")
-        file = request.form.get("file")
-        session['docs_file'] = file
+
         if not user_query:
             return render_template("index.html")
         
