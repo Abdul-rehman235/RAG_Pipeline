@@ -44,18 +44,16 @@ class CustomEmbeddings(Embeddings):
 # -------------------------------------------------------------
 # INITIALIZE RAG & VECTOR STORE ONCE AT STARTUP (GLOBAL SCOPE)
 # -------------------------------------------------------------
-@app.before_request
-def initialize_vector_store():
-    # # 1. Locate PDF file
-    # pdf_path = BASE_DIR / "python_rag_reference.pdf"
-    # if not os.path.exists(pdf_path):
-    #     pdf_path = BASE_DIR / "api" / "python_rag_reference.pdf"
 
-    # # 2. Load & Split PDF
-    # loader = PyPDFLoader(str(pdf_path))
-    # docs = loader.load()
-    if request.method == "POST":
-        docs = request.form.get("file")
+def initialize_vector_store():
+    # 1. Locate PDF file
+    pdf_path = BASE_DIR / "python_rag_reference.pdf"
+    if not os.path.exists(pdf_path):
+        pdf_path = BASE_DIR / "api" / "python_rag_reference.pdf"
+
+    # 2. Load & Split PDF
+    loader = PyPDFLoader(str(pdf_path))
+    docs = loader.load()
 
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splitted_data = splitter.split_documents(docs)
