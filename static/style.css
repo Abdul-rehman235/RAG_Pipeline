@@ -13,6 +13,14 @@
   --radius-lg: 24px;
 }
 
+/* Force header visibility in webview/standalone mode */
+@media (display-mode: standalone) {
+  header, .top-bar {
+    display: flex !important;
+    visibility: visible !important;
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
