@@ -30,6 +30,20 @@
         <span>+</span> New chat
       </a>
 
+      <!-- UPLOAD DOCS SECTION -->
+  <div class="upload-section">
+    <input type="file" id="docFileInput" accept=".pdf,.txt,.docx" style="display: none;" multiple />
+    <button type="button" class="upload-btn" id="uploadBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+      <span>Upload Docs</span>
+    </button>
+    <div class="upload-status" id="uploadStatus"></div>
+  </div>
+
       <div class="history-title">This chat box not save your chat. permanently</div>
       <ul class="history-list">
         <li class="history-item active">RAG-ACTIVE CHAT.</li>

@@ -56,6 +56,57 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* Upload Docs Container */
+.upload-section {
+  margin: 12px 0 16px 0;
+  width: 100%;
+}
+
+/* Upload Button Styling */
+.upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  background-color: transparent;
+  color: #e3e3e3;
+  border: 1px dashed #444746;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.upload-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: #a8c7fa;
+  color: #a8c7fa;
+}
+
+.upload-btn:active {
+  transform: scale(0.98);
+}
+
+/* Upload Status Message */
+.upload-status {
+  font-size: 0.75rem;
+  margin-top: 6px;
+  padding: 0 4px;
+  color: #8e918f;
+  word-break: break-all;
+}
+
+.upload-status.success {
+  color: #81c995;
+}
+
+.upload-status.error {
+  color: #f28b82;
+}
+
 /* ROOT & BODY SETUP FOR MOBILE VIEWPORTS */
 html, body {
   height: 100%;
