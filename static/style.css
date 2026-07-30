@@ -21,6 +21,22 @@
   }
 }
 
+/* Prevents inner SVG elements from blocking button click events */
+.menu-toggle *, #menuToggle * {
+  pointer-events: none;
+}
+
+.top-bar, header {
+  position: relative;
+  z-index: 101; /* Must sit above overlay and chat content */
+}
+
+.menu-toggle, #menuToggle {
+  cursor: pointer;
+  z-index: 102;
+  touch-action: manipulation; /* Optimizes mobile tap responsiveness */
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

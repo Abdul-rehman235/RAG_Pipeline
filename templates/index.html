@@ -131,7 +131,28 @@
   const loadingRow = document.getElementById('loadingRow');
   const chatBox = document.getElementById('chatBox');
   const welcomeContainer = document.getElementById('welcomeContainer');
+  if (!menuToggle || !sidebar) {
+      console.error('Menu elements not found in the DOM.');
+      return;
+    }
 
+    function toggleSidebar() {
+      sidebar.classList.toggle('active');
+      if (sidebarOverlay) {
+        sidebarOverlay.classList.toggle('active');
+      }
+    }
+
+    // Attach click listener
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevents event bubbling
+      toggleSidebar();
+    });
+
+    // Close when tapping outside overlay
+    if (sidebarOverlay) {
+      sidebarOverlay.addEventListener('click', toggleSidebar);
+    }
   chatForm.addEventListener('submit', async (e) => {
     // 1. STOP PAGE RELOAD
     e.preventDefault();
